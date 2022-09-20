@@ -3,6 +3,7 @@ class Game {
     constructor(){
         this.player = null; //will store an instance of the class Player
         this.obstacles = []; //will store instances of the class Obstacle
+        this.bullets = []
     }
     start(){
         this.player = new Player();
@@ -26,6 +27,10 @@ class Game {
         }, 80);
 
 
+
+        
+
+
     }
     attachEventListeners(){
         document.addEventListener("keydown", (event) => {
@@ -33,6 +38,8 @@ class Game {
                 this.player.moveLeft();
             }else if(event.key === "ArrowRight"){
                 this.player.moveRight();
+            }else if(event.key === " "){
+                this.player.fire();
             }
         });
     }
@@ -60,7 +67,7 @@ class Player {
         this.width = 5;
         this.height = 5;
         this.positionX = 47.5;
-        this.positionY = 0;
+        this.positionY = 1;
         this.domElement = null;
 
         this.createDomElement();
@@ -88,6 +95,11 @@ class Player {
         this.positionX++;
         this.domElement.style.left = this.positionX + "vw";
     }
+
+    fire(){
+        const newBullet = new Bullet(this.positionX);
+        newBullet.moveUp();
+    }
 }
 
 
@@ -105,7 +117,7 @@ class Obstacle {
         // create dom element
         this.domElement = document.createElement('div');
 
-        // set id and css
+        // set class and css
         this.domElement.className = "obstacle";
         this.domElement.style.width = this.width + "vw";
         this.domElement.style.height = this.height + "vh";
@@ -122,6 +134,40 @@ class Obstacle {
     }
 }
 
+class Bullet {
+    constructor(position) {
+        this.positionX = position + 2;
+        this.positionY = 5;
+        this.width = 7;
+        this.height = 7;
+        this.domElement = null;
+
+        this.createDomElement();
+    }
+    createDomElement(){
+        // create dom element
+        this.domElement = document.createElement('div');
+
+        // set class and css
+        this.domElement.className = "bullet";
+        this.domElement.style.width = this.width + "px";
+        this.domElement.style.height = this.height + "px";
+        this.domElement.style.bottom = this.positionY + "vh";
+        this.domElement.style.left = this.positionX + "vw";
+
+        // append to the dom
+        const boardElm = document.getElementById("board");
+        boardElm.appendChild(this.domElement)
+    }
+    moveUp(){
+        //move bullets
+        setInterval(() => {
+            this.positionY++;
+            this.domElement.style.bottom = this.positionY + "vh";
+
+        }, 20);
+    }
+}
 
 const game = new Game();
 game.start();
