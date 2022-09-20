@@ -3,14 +3,14 @@ class Game {
     constructor(){
         this.player = null; //will store an instance of the class Player
         this.obstacles = []; //will store instances of the class Obstacle
-        this.bullets = []
+        this.bullets = [];
     }
     start(){
         this.player = new Player();
         this.attachEventListeners();
 
         //create new obstacles
-        const positionArr = [2,8,14,20,26,32,38,44,50, 56, 62, 68,74,80,86,92];
+        const positionArr = [2,8,14,20,26,32,38,44,50,56,62,68,74,80,86,92];
         setInterval(() => {
             for (let i = 0; i < positionArr.length; i++) {
                 const newObstacle = new Obstacle(positionArr[i]);
@@ -20,17 +20,24 @@ class Game {
 
         //move obstacles
         setInterval(() => {
-            this.obstacles.forEach( (obstacleInstance) => {
-                obstacleInstance.moveDown(); //move
-                this.detectCollision(obstacleInstance); //detect collision with current obstacle
-            });
+            for(const obstacleInstance of this.obstacles) {
+                for (const bulletInstance of this.bullets){
+                    this.detectCollision(bulletInstance, obstacleInstance);
+                }
+                obstacleInstance.moveDown() //move
+                this.gameOver(obstacleInstance)
+            }
         }, 80);
 
 
+        setInterval(()=>{
+            this.bullets.forEach((bulletInstance)=>{
+                bulletInstance.moveUp();
+            })
+        }, 20)
 
         
-
-
+        
     }
     attachEventListeners(){
         document.addEventListener("keydown", (event) => {
@@ -39,24 +46,29 @@ class Game {
             }else if(event.key === "ArrowRight"){
                 this.player.moveRight();
             }else if(event.key === " "){
-                this.player.fire();
+                const bullet = this.player.fire()
+                this.bullets.push(bullet);
             }
         });
     }
-    detectCollision(obstacleInstance){
+    detectCollision(bulletInstance, obstacleInstance){
         if (
-            this.player.positionX < obstacleInstance.positionX + obstacleInstance.width &&
-            this.player.positionX + this.player.width > obstacleInstance.positionX &&
-            this.player.positionY < obstacleInstance.positionY + obstacleInstance.height &&
-            this.player.height + this.player.positionY > obstacleInstance.positionY
+            bulletInstance.positionX < obstacleInstance.positionX + obstacleInstance.width &&
+            bulletInstance.positionX + bulletInstance.width > obstacleInstance.positionX &&
+            bulletInstance.positionY < obstacleInstance.positionY + obstacleInstance.height &&
+            bulletInstance.height + bulletInstance.positionY > obstacleInstance.positionY
         ) {
-            location.href = 'gameover.html';
-        }
-    }
-    removeObstacleIfOutside(obstacleInstance){
-        if(obstacleInstance.positionY < 0){
+            
             obstacleInstance.domElement.remove(); //remove from the dom
             this.obstacles.shift(); // remove from the array
+            bulletInstance.domElement.remove(); //remove from the dom
+            this.bullets.shift(); // remove from the array
+        }
+    }
+    gameOver(obstacleInstance){
+        if(obstacleInstance.positionY === 0){
+            location.href = 'gameover.html';
+
         }
     }
 }
@@ -98,7 +110,7 @@ class Player {
 
     fire(){
         const newBullet = new Bullet(this.positionX);
-        newBullet.moveUp();
+        return newBullet
     }
 }
 
@@ -161,11 +173,11 @@ class Bullet {
     }
     moveUp(){
         //move bullets
-        setInterval(() => {
-            this.positionY++;
-            this.domElement.style.bottom = this.positionY + "vh";
+        //setInterval(() => {
+        this.positionY++;
+        this.domElement.style.bottom = this.positionY + "vh";
 
-        }, 20);
+        //}, 20);
     }
 }
 
