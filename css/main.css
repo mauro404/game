@@ -5,7 +5,7 @@ body {
 
 #board {
     height: 100vh;
-    background-image: url('/images/space.jpg');
+    background-image: url('../images/space.jpg');
     position: relative;
 }
 
@@ -17,6 +17,7 @@ body {
 .obstacle {
     background-color: rgb(90, 19, 156);
     position: absolute;
+    
 }
 
 .bullet {

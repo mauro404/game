@@ -1,43 +1,51 @@
 
 class Game {
     constructor(){
-        this.player = null; //will store an instance of the class Player
-        this.obstacles = []; //will store instances of the class Obstacle
+        this.player = null;
+        this.obstacle = null;
+        this.obstacles = []
         this.bullets = [];
     }
     start(){
         this.player = new Player();
         this.attachEventListeners();
-
-        //create new obstacles
-        const positionArr = [2,8,14,20,26,32,38,44,50,56,62,68,74,80,86,92];
+        this.obstacle = new Obstacle;
+        this.obstacle.createArmy();
+        this.obstacles = this.obstacle.army;
+        
+        
+        
         setInterval(() => {
-            for (let i = 0; i < positionArr.length; i++) {
-                const newObstacle = new Obstacle(positionArr[i]);
-                this.obstacles.push(newObstacle);
-            }
-        }, 800);
-
-        //move obstacles
-        setInterval(() => {
-            for(const obstacleInstance of this.obstacles) {
-                for (const bulletInstance of this.bullets){
-                    this.detectCollision(bulletInstance, obstacleInstance);
-                }
-                obstacleInstance.moveDown() //move
-                this.gameOver(obstacleInstance)
-            }
-        }, 80);
-
-
-        setInterval(()=>{
+            
+            this.obstacles.forEach((obstacleInstance, obstacleInstanceIndex) => {
+                // if (this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] < 93){
+                //     obstacleInstance.moveRight();
+                //     this.gameOver(obstacleInstance);
+                //     this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
+                // } 
+                // else if (this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] > 93){
+                    obstacleInstance.moveDown();
+                    this.gameOver(obstacleInstance);
+                    this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
+                //     this.obstacle.movingRight = false;
+                // } 
+                // else if (!this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] > 26){
+                //     obstacleInstance.moveLeft();
+                //     this.gameOver(obstacleInstance);
+                //     this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
+                // }
+                // else {
+                //     obstacleInstance.moveDown();
+                //     this.gameOver(obstacleInstance);
+                //     this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
+                //     this.obstacle.movingRight = true;                   
+                // }    
+            })
             this.bullets.forEach((bulletInstance)=>{
                 bulletInstance.moveUp();
             })
-        }, 20)
-
-        
-        
+        }, 100);
+             
     }
     attachEventListeners(){
         document.addEventListener("keydown", (event) => {
@@ -51,19 +59,22 @@ class Game {
             }
         });
     }
-    detectCollision(bulletInstance, obstacleInstance){
-        if (
-            bulletInstance.positionX < obstacleInstance.positionX + obstacleInstance.width &&
-            bulletInstance.positionX + bulletInstance.width > obstacleInstance.positionX &&
-            bulletInstance.positionY < obstacleInstance.positionY + obstacleInstance.height &&
-            bulletInstance.height + bulletInstance.positionY > obstacleInstance.positionY
-        ) {
-            
-            obstacleInstance.domElement.remove(); //remove from the dom
-            this.obstacles.shift(); // remove from the array
-            bulletInstance.domElement.remove(); //remove from the dom
-            this.bullets.shift(); // remove from the array
-        }
+    detectBulletCollision(obstacleInstance, obstacleInstanceIndex){
+        this.bullets.forEach( (bulletInstance, bulletInstanceIndex) => {
+            if (
+                bulletInstance.positionX < obstacleInstance.positionX + obstacleInstance.width &&
+                bulletInstance.positionX + bulletInstance.width > obstacleInstance.positionX &&
+                bulletInstance.positionY < obstacleInstance.positionY + obstacleInstance.height &&
+                bulletInstance.height + bulletInstance.positionY > obstacleInstance.positionY
+            ) {
+                
+                obstacleInstance.domElement.remove(); //remove from the dom
+                this.obstacles.splice(obstacleInstanceIndex, 1); // remove from the array
+                bulletInstance.domElement.remove();
+                this.bullets.splice(bulletInstanceIndex, 1);
+            }
+
+        });
     }
     gameOver(obstacleInstance){
         if(obstacleInstance.positionY === 0){
@@ -72,7 +83,6 @@ class Game {
         }
     }
 }
-
 
 class Player {
     constructor(){
@@ -100,14 +110,17 @@ class Player {
         boardElm.appendChild(this.domElement)
     }
     moveLeft(){
-        this.positionX--;
-        this.domElement.style.left = this.positionX + "vw";
+        if (this.positionX > 0) {
+            this.positionX -= 3;
+            this.domElement.style.left = this.positionX + "vw";
+        }
     }
     moveRight(){
-        this.positionX++;
-        this.domElement.style.left = this.positionX + "vw";
+        if(this.positionX < 92){
+            this.positionX += 3;
+            this.domElement.style.left = this.positionX + "vw";
+        }
     }
-
     fire(){
         const newBullet = new Bullet(this.positionX);
         return newBullet
@@ -116,29 +129,48 @@ class Player {
 
 
 class Obstacle {
-    constructor(position){
+    constructor(position, positionY){
         this.positionX = position;
-        this.positionY = 95;
+        this.positionY = positionY;
         this.width = 5;
         this.height = 5;
         this.domElement = null;
+        this.army = [];
+        this.movingRight = true;
 
         this.createDomElement();
     }
     createDomElement(){
-        // create dom element
         this.domElement = document.createElement('div');
 
-        // set class and css
         this.domElement.className = "obstacle";
         this.domElement.style.width = this.width + "vw";
         this.domElement.style.height = this.height + "vh";
         this.domElement.style.bottom = this.positionY + "vh";
         this.domElement.style.left = this.positionX + "vw";
 
-        // append to the dom
         const boardElm = document.getElementById("board");
         boardElm.appendChild(this.domElement)
+    }
+    createArmy() {
+        let positionY = 95;
+        const positionArr = [2,8,14,20,26,32,38,44,50,56,62,68,74,80,86,92];
+        for(let i=0; i < 5; i++){
+            for (let j = 5; j < positionArr.length -5; j++) {
+                const newObstacle = new Obstacle(positionArr[j], positionY);
+                this.army.push(newObstacle);
+            }
+            positionY += 10;
+        }
+
+    }
+    moveLeft(){
+        this.positionX -= 3;
+        this.domElement.style.left = this.positionX + "vw";
+    }
+    moveRight(){
+        this.positionX += 3;
+        this.domElement.style.left = this.positionX + "vw";
     }
     moveDown(){
         this.positionY--;
@@ -151,33 +183,26 @@ class Bullet {
         this.positionX = position + 2;
         this.positionY = 5;
         this.width = 7;
-        this.height = 7;
+        this.height = 14;
         this.domElement = null;
 
         this.createDomElement();
     }
     createDomElement(){
-        // create dom element
         this.domElement = document.createElement('div');
 
-        // set class and css
         this.domElement.className = "bullet";
         this.domElement.style.width = this.width + "px";
         this.domElement.style.height = this.height + "px";
         this.domElement.style.bottom = this.positionY + "vh";
         this.domElement.style.left = this.positionX + "vw";
 
-        // append to the dom
         const boardElm = document.getElementById("board");
         boardElm.appendChild(this.domElement)
     }
     moveUp(){
-        //move bullets
-        //setInterval(() => {
-        this.positionY++;
+        this.positionY += 2;
         this.domElement.style.bottom = this.positionY + "vh";
-
-        //}, 20);
     }
 }
 
