@@ -5,6 +5,10 @@ class Game {
         this.obstacle = null;
         this.obstacles = []
         this.bullets = [];
+
+        this.explosionSound = new Audio();
+        this.explosionSound.src = "../audio/explosion-sound.mp3";
+        this.explosionSound.volume = 0.1;
     }
     start(){
         this.player = new Player();
@@ -18,32 +22,44 @@ class Game {
         setInterval(() => {
             
             this.obstacles.forEach((obstacleInstance, obstacleInstanceIndex) => {
-                // if (this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] < 93){
-                //     obstacleInstance.moveRight();
-                //     this.gameOver(obstacleInstance);
-                //     this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
-                // } 
-                // else if (this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] > 93){
-                    obstacleInstance.moveDown();
-                    this.gameOver(obstacleInstance);
+                if (this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] < 93){
+                    obstacleInstance.moveRight();
+                    //this.gameOver(obstacleInstance);
                     this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
-                //     this.obstacle.movingRight = false;
-                // } 
-                // else if (!this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] > 26){
-                //     obstacleInstance.moveLeft();
-                //     this.gameOver(obstacleInstance);
-                //     this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
-                // }
-                // else {
-                //     obstacleInstance.moveDown();
-                //     this.gameOver(obstacleInstance);
-                //     this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
-                //     this.obstacle.movingRight = true;                   
-                // }    
+                } 
+                else if (this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] > 93){
+                    if (this.obstacles.length > 1 && this.obstacles.at(-1)["positionY"] === this.obstacles.at(-2)["positionY"]){
+                        obstacleInstance.moveDown();
+                        this.gameOver(obstacleInstance);
+                        this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
+                    } else {
+                        obstacleInstance.moveDown();
+                        this.obstacle.movingRight = false;
+                    }
+                } 
+                else if (!this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] > 30){
+                    obstacleInstance.moveLeft();
+                    //this.gameOver(obstacleInstance);
+                    this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
+                }
+                else {
+                    if (this.obstacles.length > 1 && this.obstacles.at(-1)["positionY"] === this.obstacles.at(-2)["positionY"]){
+                        obstacleInstance.moveDown();
+                        this.gameOver(obstacleInstance);
+                        this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
+                    }
+                    else {
+                        obstacleInstance.moveDown();
+                        this.obstacle.movingRight = true;                   
+                    }
+                }    
             })
             this.bullets.forEach((bulletInstance)=>{
                 bulletInstance.moveUp();
             })
+            if(this.obstacles.length === 0) {
+                location.href = 'youwin.html';
+            }
         }, 100);
              
     }
@@ -68,7 +84,7 @@ class Game {
                 bulletInstance.positionY < obstacleInstance.positionY + obstacleInstance.height &&
                 bulletInstance.height + bulletInstance.positionY > obstacleInstance.positionY
             ) {
-                
+                this.explosionSound.play()
                 obstacleInstance.domElement.remove(); //remove from the dom
                 this.obstacles.splice(obstacleInstanceIndex, 1); // remove from the array
                 bulletInstance.domElement.remove();
@@ -158,7 +174,7 @@ class Obstacle {
         boardElm.appendChild(this.domElement)
     }
     createArmy() {
-        let positionY = 95;
+        let positionY = 50;
         const positionArr = [2,8,14,20,26,32,38,44,50,56,62,68,74,80,86,92];
         for(let i=0; i < 5; i++){
             for (let j = 5; j < positionArr.length -5; j++) {
@@ -170,15 +186,15 @@ class Obstacle {
 
     }
     moveLeft(){
-        this.positionX -= 3;
+        this.positionX -= 2;
         this.domElement.style.left = this.positionX + "vw";
     }
     moveRight(){
-        this.positionX += 3;
+        this.positionX += 2;
         this.domElement.style.left = this.positionX + "vw";
     }
     moveDown(){
-        this.positionY--;
+        this.positionY -= 5;
         this.domElement.style.bottom = this.positionY + "vh";
     }
 }
