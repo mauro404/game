@@ -10,25 +10,25 @@ body {
 }
 
 #player {
-    background-color: greenyellow;
     position: absolute;
+    background-image: url(../images/player.png);
+    background-size: 100%;
+    background-position: 100%;
+    background-repeat: no-repeat;
 }
 
 .obstacle {
-    background-color: rgb(90, 19, 156);
     position: absolute;
+    background-image: url(../images/ufo4.png);
+    background-size: 80%;
+    background-position: 100%;
+    background-repeat: no-repeat;
 }
 
 .bullet {
     background-color: white;
     position: absolute;
 }
-
-/* #game-over {
-    height: 95vh;
-    background-image: url('../images/game-over2.jpg');
-    background-repeat: no-repeat;
-} */
 
 a:link, a:visited {
     background-color: #dc0f00;
@@ -41,7 +41,6 @@ a:link, a:visited {
     margin-left: auto;
     margin-right: auto;
     width: 15%;
-    /* display: inline-block; */
   }
 
   .game-over {

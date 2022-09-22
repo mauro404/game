@@ -55,6 +55,7 @@ class Game {
                 this.player.moveRight();
             }else if(event.key === " "){
                 const bullet = this.player.fire()
+                this.player.shotSound.play()
                 this.bullets.push(bullet);
             }
         });
@@ -86,11 +87,15 @@ class Game {
 
 class Player {
     constructor(){
-        this.width = 5;
-        this.height = 5;
-        this.positionX = 47.5;
+        this.width = 4;
+        this.height = 6;
+        this.positionX = 48;
         this.positionY = 1;
         this.domElement = null;
+
+        this.shotSound = new Audio();
+        this.shotSound.src = "../audio/shot-sound.wav";
+        this.shotSound.volume = 0.05;
 
         this.createDomElement();
     }
@@ -119,7 +124,6 @@ class Player {
         if(this.positionX < 95){
             this.positionX += 3;
             this.domElement.style.left = this.positionX + "vw";
-
         }
     }
     fire(){
@@ -130,8 +134,8 @@ class Player {
 
 
 class Obstacle {
-    constructor(position, positionY){
-        this.positionX = position;
+    constructor(positionX, positionY){
+        this.positionX = positionX;
         this.positionY = positionY;
         this.width = 5;
         this.height = 5;
@@ -181,10 +185,10 @@ class Obstacle {
 
 class Bullet {
     constructor(position) {
-        this.positionX = position + 2;
+        this.positionX = position + 1.8;
         this.positionY = 5;
-        this.width = 7;
-        this.height = 14;
+        this.width = 6;
+        this.height = 12;
         this.domElement = null;
 
         this.createDomElement();
