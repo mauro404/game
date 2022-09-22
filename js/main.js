@@ -116,9 +116,10 @@ class Player {
         }
     }
     moveRight(){
-        if(this.positionX < 92){
+        if(this.positionX < 95){
             this.positionX += 3;
             this.domElement.style.left = this.positionX + "vw";
+
         }
     }
     fire(){
