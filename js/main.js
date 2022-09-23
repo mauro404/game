@@ -8,12 +8,7 @@ class Game {
 
         this.explosionSound = new Audio("./audio/explosion-sound.mp3");
         // this.explosionSound.volume = 0.1;
-        
-        this.winSound = new Audio("./audio/win-sound.wav")
-        // this.winSound.volume = 0.2;
-        
-        this.gameOverSound = new Audio("./audio/game-over-sound.wav");
-        // this.gameOverSound.volume = 0.2;
+
     }
     start(){
         this.player = new Player();
@@ -30,7 +25,6 @@ class Game {
             this.obstacles.forEach((obstacleInstance, obstacleInstanceIndex) => {
                 if (this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] < 93){
                     obstacleInstance.moveRight();
-                    //this.gameOver(obstacleInstance);
                     this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
                 } 
                 else if (this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] > 93){
@@ -45,7 +39,6 @@ class Game {
                 } 
                 else if (!this.obstacle.movingRight && this.obstacles.at(-1)["positionX"] > 30){
                     obstacleInstance.moveLeft();
-                    //this.gameOver(obstacleInstance);
                     this.detectBulletCollision(obstacleInstance, obstacleInstanceIndex);
                 }
                 else {
@@ -64,7 +57,6 @@ class Game {
                 bulletInstance.moveUp();
             })
             if(this.obstacles.length === 0) {
-                this.winSound.play();
                 location.href = 'youwin.html';
             }
         }, 100);
@@ -101,10 +93,8 @@ class Game {
         });
     }
     gameOver(obstacleInstance){
-        if(obstacleInstance.positionY === 0){
-            this.gameOverSound.play()
+        if(obstacleInstance.positionY <= 0){
             location.href = 'gameover.html';
-
         }
     }
 }
