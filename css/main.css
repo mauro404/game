@@ -43,7 +43,31 @@ a:link, a:visited {
     width: 15%;
     font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', Verdana, sans-serif;
   }
-
+.btn-intro {
+    background-color: #dc0f00;
+    color: white;
+    padding: 14px 25px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 15px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 15%;
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', Verdana, sans-serif;
+  }
+.intro {
+    background-color: black;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    padding-top: 5%;
+    padding-bottom: 0;
+}
+#intro{
+    background-color: black;
+}
 .game-over {
     display: block;
     margin-left: auto;
