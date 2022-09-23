@@ -22,6 +22,7 @@ class Game {
         this.obstacle.createArmy();
         this.obstacles = this.obstacle.army;
         
+        document.getElementsByClassName('obstacle')[0].remove();
         
         
         setInterval(() => {
