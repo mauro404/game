@@ -6,9 +6,14 @@ class Game {
         this.obstacles = []
         this.bullets = [];
 
-        this.explosionSound = new Audio();
-        this.explosionSound.src = "../audio/explosion-sound.mp3";
-        this.explosionSound.volume = 0.1;
+        this.explosionSound = new Audio("./audio/explosion-sound.mp3");
+        // this.explosionSound.volume = 0.1;
+        
+        this.winSound = new Audio("./audio/win-sound.wav")
+        // this.winSound.volume = 0.2;
+        
+        this.gameOverSound = new Audio("./audio/game-over-sound.wav");
+        // this.gameOverSound.volume = 0.2;
     }
     start(){
         this.player = new Player();
@@ -58,6 +63,7 @@ class Game {
                 bulletInstance.moveUp();
             })
             if(this.obstacles.length === 0) {
+                this.winSound.play();
                 location.href = 'youwin.html';
             }
         }, 100);
@@ -95,6 +101,7 @@ class Game {
     }
     gameOver(obstacleInstance){
         if(obstacleInstance.positionY === 0){
+            this.gameOverSound.play()
             location.href = 'gameover.html';
 
         }
@@ -109,9 +116,8 @@ class Player {
         this.positionY = 1;
         this.domElement = null;
 
-        this.shotSound = new Audio();
-        this.shotSound.src = "../audio/shot-sound.wav";
-        this.shotSound.volume = 0.05;
+        this.shotSound = new Audio("./audio/shot-sound.wav");
+        // this.shotSound.volume = 0.5;
 
         this.createDomElement();
     }
