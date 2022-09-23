@@ -219,7 +219,7 @@ class Bullet {
         boardElm.appendChild(this.domElement)
     }
     moveUp(){
-        this.positionY += 2;
+        this.positionY += 2.5;
         this.domElement.style.bottom = this.positionY + "vh";
     }
 }
